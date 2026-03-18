@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Study Plan – Smart Study Planner{% endblock %}
+
+{% block content %}
+<section class="py-4">
+  <div class="container">
+
+    <!-- ── Page Header ────────────────────────────────────────────────── -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+      <div>
+        <h1 class="page-title mb-0">
+          <i class="bi bi-calendar3 text-accent me-2"></i>Study Plan
+        </h1>
+        <p class="text-muted small mb-0">Your personalised day-wise study schedule.</p>
+      </div>
+      <form action="{{ url_for('planner.generate_plan') }}" method="POST">
+        <button type="submit" class="btn btn-accent px-4"
+                onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Generating…';this.form.submit()">
+          <i class="bi bi-lightning-charge-fill me-2"></i>
+          {% if plan_by_date %}Regenerate Plan{% else %}Generate Plan{% endif %}
+        </button>
+      </form>
+    </div>
+
+    {% if plan_by_date %}
+      <!-- ── Timeline Plan ───────────────────────────────────────────── -->
+      <div class="plan-timeline">
+        {% set day_num = namespace(value=1) %}
+        {% for plan_date, entries in plan_by_date.items() %}
+          <div class="plan-day-block mb-4">
+
+            <!-- Day Label -->
+            <div class="plan-day-label d-flex align-items-center gap-3 mb-3">
+              <div class="plan-day-number">Day {{ day_num.value }}</div>
+              <div class="plan-day-date">
+                <i class="bi bi-calendar2-event me-1 text-accent"></i>
+                <strong>{{ plan_date }}</strong>
+              </div>
+              <div class="plan-day-count ms-auto">
+                <span class="badge bg-accent">{{ entries | length }} topic{{ 's' if entries | length > 1 }}</span>
+              </div>
+            </div>
+
+            <!-- Task Cards for this day -->
+            <div class="row g-2 ps-4 border-start border-accent border-2">
+              {% for entry in entries %}
+                <div class="col-sm-6 col-lg-4">
+                  <div class="plan-task-card p-3 rounded-3 h-100
+                      {% if entry.status == 'Completed' %}plan-task-done{% else %}plan-task-pending{% endif %}">
+                    <div class="d-flex align-items-start gap-2">
+                      <span class="task-status-dot flex-shrink-0 mt-1
+                          {% if entry.status == 'Completed' %}done{% else %}pending{% endif %}">
+                      </span>
+                      <div>
+                        <div class="fw-semibold small
+                            {% if entry.status == 'Completed' %}text-decoration-line-through text-muted{% endif %}">
+                          {{ entry.topic_name }}
+                        </div>
+                        <div class="text-muted mt-1" style="font-size:.72rem;">
+                          <i class="bi bi-book me-1"></i>{{ entry.subject_name }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-2">
+                      <span class="badge {% if entry.status == 'Completed' %}bg-success{% else %}bg-warning text-dark{% endif %} badge-sm">
+                        {% if entry.status == 'Completed' %}
+                          <i class="bi bi-check-circle me-1"></i>Completed
+                        {% else %}
+                          <i class="bi bi-hourglass-split me-1"></i>Pending
+                        {% endif %}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+          </div>
+          {% set day_num.value = day_num.value + 1 %}
+        {% endfor %}
+      </div>
+
+      <!-- ── Plan Summary ──────────────────────────────────────────── -->
+      <div class="ssp-card p-4 mt-2">
+        <div class="row g-3 text-center">
+          <div class="col-4">
+            <div class="fw-bold fs-4 text-accent">{{ plan_by_date | length }}</div>
+            <div class="text-muted small">Study Days</div>
+          </div>
+          <div class="col-4">
+            {% set total_planned = namespace(v=0) %}
+            {% for d, e in plan_by_date.items() %}{% set total_planned.v = total_planned.v + e|length %}{% endfor %}
+            <div class="fw-bold fs-4 text-accent">{{ total_planned.v }}</div>
+            <div class="text-muted small">Topics Planned</div>
+          </div>
+          <div class="col-4">
+            {% set done_planned = namespace(v=0) %}
+            {% for d, e in plan_by_date.items() %}
+              {% for t in e %}{% if t.status == 'Completed' %}{% set done_planned.v = done_planned.v + 1 %}{% endif %}{% endfor %}
+            {% endfor %}
+            <div class="fw-bold fs-4 text-accent">{{ done_planned.v }}</div>
+            <div class="text-muted small">Completed</div>
+          </div>
+        </div>
+      </div>
+
+    {% else %}
+      <!-- ── Empty State ─────────────────────────────────────────────── -->
+      <div class="ssp-card p-5 text-center">
+        <i class="bi bi-calendar-x display-3 text-muted"></i>
+        <h4 class="mt-4 fw-bold">No study plan yet</h4>
+        <p class="text-muted mb-4">
+          Make sure you have subjects with exam dates and pending topics.<br/>
+          Then click <strong>Generate Plan</strong> to create your schedule.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="{{ url_for('subject.subjects') }}" class="btn btn-outline-accent">
+            <i class="bi bi-book me-1"></i>Add Subjects
+          </a>
+          <a href="{{ url_for('task.tasks') }}" class="btn btn-outline-accent">
+            <i class="bi bi-list-task me-1"></i>Add Topics
+          </a>
+          <form action="{{ url_for('planner.generate_plan') }}" method="POST">
+            <button type="submit" class="btn btn-accent">
+              <i class="bi bi-lightning-charge-fill me-1"></i>Generate Plan
+            </button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

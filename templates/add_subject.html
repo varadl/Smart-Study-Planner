@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Subjects – Smart Study Planner{% endblock %}
+
+{% block content %}
+<section class="py-4">
+  <div class="container">
+
+    <h1 class="page-title mb-1"><i class="bi bi-book-fill text-accent me-2"></i>Subjects</h1>
+    <p class="text-muted mb-4">Add subjects and set exam dates. Days remaining are calculated automatically.</p>
+
+    <div class="row g-4">
+
+      <!-- ── Add Subject Form ─────────────────────────────────────────── -->
+      <div class="col-lg-4">
+        <div class="ssp-card p-4 sticky-top" style="top: 90px;">
+          <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle text-accent me-2"></i>Add New Subject</h5>
+          <form action="{{ url_for('subject.add_subject') }}" method="POST" id="addSubjectForm" novalidate>
+
+            <div class="mb-3">
+              <label for="subject_name" class="form-label fw-semibold">
+                <i class="bi bi-journal-text me-1 text-accent"></i>Subject Name
+              </label>
+              <input type="text" id="subject_name" name="subject_name"
+                     class="form-control ssp-input" placeholder="e.g. Mathematics"
+                     required />
+              <div class="invalid-feedback">Subject name is required.</div>
+            </div>
+
+            <div class="mb-4">
+              <label for="exam_date" class="form-label fw-semibold">
+                <i class="bi bi-calendar-event me-1 text-accent"></i>Exam Date
+              </label>
+              <input type="date" id="exam_date" name="exam_date"
+                     class="form-control ssp-input" required />
+              <div class="invalid-feedback">Please select an exam date.</div>
+            </div>
+
+            <button type="submit" class="btn btn-accent w-100 py-2 fw-semibold">
+              <i class="bi bi-plus-lg me-2"></i>Add Subject
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ── Subject List ────────────────────────────────────────────── -->
+      <div class="col-lg-8">
+        {% if subjects %}
+          <div class="row g-3">
+            {% for s in subjects %}
+              <div class="col-md-6">
+                <div class="subject-card h-100 p-4">
+                  <div class="d-flex align-items-start justify-content-between gap-2 mb-3">
+                    <div>
+                      <h6 class="fw-bold mb-0">{{ s.subject_name }}</h6>
+                      <small class="text-muted">
+                        <i class="bi bi-calendar2 me-1"></i>Exam: {{ s.exam_date }}
+                      </small>
+                    </div>
+                    {% if s.days_left < 0 %}
+                      <span class="badge bg-secondary">Passed</span>
+                    {% elif s.days_left == 0 %}
+                      <span class="badge bg-danger">Today!</span>
+                    {% elif s.days_left <= 3 %}
+                      <span class="badge bg-danger">{{ s.days_left }}d left</span>
+                    {% elif s.days_left <= 7 %}
+                      <span class="badge bg-warning text-dark">{{ s.days_left }}d left</span>
+                    {% else %}
+                      <span class="badge bg-success">{{ s.days_left }}d left</span>
+                    {% endif %}
+                  </div>
+
+                  <div class="d-flex gap-2">
+                    <a href="{{ url_for('task.tasks') }}" class="btn btn-sm btn-outline-accent flex-grow-1">
+                      <i class="bi bi-list-task me-1"></i>Tasks
+                    </a>
+                    <form action="{{ url_for('subject.delete_subject', subject_id=s.id) }}" method="POST"
+                          onsubmit="return confirm('Delete subject \'{{ s.subject_name }}\' and all its topics?')">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="ssp-card p-5 text-center">
+            <i class="bi bi-book display-4 text-muted"></i>
+            <h5 class="mt-3 text-muted">No subjects yet</h5>
+            <p class="text-muted small">Use the form on the left to add your first subject.</p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
