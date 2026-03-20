@@ -1,61 +1,54 @@
 {% extends "base.html" %}
 {% block title %}Login – Smart Study Planner{% endblock %}
 
-{% block content %}
-<section class="auth-section d-flex align-items-center justify-content-center py-5">
+{% block public_content %}
+<section class="d-flex align-items-center justify-content-center py-5" style="min-height: 80vh;">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-sm-10 col-md-8 col-lg-5">
+      <div class="col-sm-10 col-md-8 col-lg-5 animate-fade-up">
 
-        <div class="auth-card p-4 p-md-5">
+        <div class="glass-card p-4 p-md-5">
           <!-- Header -->
-          <div class="text-center mb-4">
-            <div class="auth-icon-wrap mb-3">
-              <i class="bi bi-box-arrow-in-right"></i>
+          <div class="text-center mb-5">
+            <div class="stat-icon-box mx-auto mb-4" style="background: var(--accent-soft); color: var(--accent); width: 80px; height: 80px; font-size: 2.5rem;">
+              <i class="bi bi-shield-lock"></i>
             </div>
-            <h2 class="fw-bold">Welcome Back</h2>
-            <p class="text-muted small">Log in to your study dashboard</p>
+            <h2 class="fw-bold h3">Welcome Back</h2>
+            <p class="text-dim small">Sign in to resume your study journey</p>
           </div>
 
           <!-- Form -->
-          <form action="{{ url_for('auth.login') }}" method="POST" id="loginForm" novalidate>
-
-            <div class="mb-3">
-              <label for="login_email" class="form-label fw-semibold">
-                <i class="bi bi-envelope me-1 text-accent"></i>Email
-              </label>
-              <input type="email" id="login_email" name="email"
-                     class="form-control ssp-input" placeholder="you@example.com"
-                     required autocomplete="email" />
-              <div class="invalid-feedback">Please enter your email.</div>
-            </div>
+          <form action="{{ url_for('auth.login') }}" method="POST" id="loginForm" class="form-premium" novalidate>
 
             <div class="mb-4">
-              <label for="login_password" class="form-label fw-semibold">
-                <i class="bi bi-lock me-1 text-accent"></i>Password
+              <label for="login_email" class="form-label">
+                <i class="bi bi-envelope me-2 text-accent"></i>Email Address
               </label>
-              <div class="input-group">
-                <input type="password" id="login_password" name="password"
-                       class="form-control ssp-input" placeholder="Enter your password"
-                       required autocomplete="current-password" />
-                <button class="btn btn-outline-secondary toggle-pw" type="button"
-                        data-target="login_password" title="Show/Hide password">
-                  <i class="bi bi-eye"></i>
-                </button>
-              </div>
-              <div class="invalid-feedback">Please enter your password.</div>
+              <input type="email" id="login_email" name="email"
+                     class="input-premium form-control" placeholder="alex@example.com"
+                     required autocomplete="email" />
             </div>
 
-            <button type="submit" class="btn btn-accent w-100 py-2 fw-semibold">
-              <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+            <div class="mb-5">
+              <label for="login_password" class="form-label">
+                <i class="bi bi-lock me-2 text-accent"></i>Password
+              </label>
+              <input type="password" id="login_password" name="password"
+                     class="input-premium form-control" placeholder="••••••••"
+                     required autocomplete="current-password" />
+            </div>
+
+            <button type="submit" class="btn btn-premium w-100 py-3 fw-bold">
+              Sign In <i class="bi bi-arrow-right ms-2"></i>
             </button>
           </form>
 
-          <hr class="my-4" />
-          <p class="text-center text-muted small mb-0">
-            Don't have an account?
-            <a href="{{ url_for('auth.register') }}" class="ssp-link fw-semibold">Register Now</a>
-          </p>
+          <div class="text-center mt-5 pt-4 border-top border-glass">
+            <p class="text-dim small mb-0">
+              New to Smart Study?
+              <a href="{{ url_for('auth.register') }}" class="text-accent fw-bold text-decoration-none ms-1">Create Account</a>
+            </p>
+          </div>
         </div>
 
       </div>

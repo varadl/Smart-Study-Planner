@@ -1,112 +1,118 @@
 {% extends "base.html" %}
 {% block title %}Dashboard – Smart Study Planner{% endblock %}
+{% block header %}Overview{% endblock %}
 
 {% block content %}
-<section class="py-4">
-  <div class="container">
+<div class="animate-fade-up">
 
-    <!-- ── Page Header ────────────────────────────────────────────────── -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
-      <div>
-        <h1 class="page-title mb-0">
-          <i class="bi bi-speedometer2 text-accent me-2"></i>Dashboard
-        </h1>
-        <p class="text-muted small mb-0">Welcome back, <strong>{{ session.get('username') }}</strong>! Here's your study overview.</p>
+    <!-- ── Stats Grid ────────────────────────────────────────────────── -->
+    <div class="row g-4 mb-5">
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-widget">
+          <div class="stat-icon-box" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa;">
+            <i class="bi bi-book-fill"></i>
+          </div>
+          <div>
+            <div class="text-dim extra-small">SUBJECTS</div>
+            <div class="fs-4 fw-bold">{{ total_subjects }}</div>
+          </div>
+        </div>
       </div>
-      <form action="{{ url_for('planner.generate_plan') }}" method="POST" id="generatePlanForm">
-        <button type="submit" class="btn btn-accent px-4" id="generatePlanBtn"
-                onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Generating…';this.form.submit()">
-          <i class="bi bi-lightning-charge-fill me-2"></i>Generate Study Plan
-        </button>
-      </form>
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-widget">
+          <div class="stat-icon-box" style="background: var(--accent-soft); color: var(--accent);">
+            <i class="bi bi-stack"></i>
+          </div>
+          <div>
+            <div class="text-dim extra-small">TOPICS</div>
+            <div class="fs-4 fw-bold">{{ total_tasks }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-widget">
+          <div class="stat-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div>
+            <div class="text-dim extra-small">COMPLETED</div>
+            <div class="fs-4 fw-bold">{{ completed_tasks }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-widget">
+          <div class="stat-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <div>
+            <div class="text-dim extra-small">PROGRESS</div>
+            <div class="fs-4 fw-bold">{{ progress }}%</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ── Stats Cards ────────────────────────────────────────────────── -->
-    <div class="row g-3 mb-4">
-      <div class="col-sm-6 col-lg-3">
-        <div class="stat-card stat-blue h-100">
-          <div class="stat-icon"><i class="bi bi-book-fill"></i></div>
-          <div class="stat-value">{{ total_subjects }}</div>
-          <div class="stat-label">Total Subjects</div>
+    <!-- ── Main Dashboard Content ────────────────────────────────────── -->
+    <div class="row g-4 mb-5">
+      
+      <!-- Progress Tracker -->
+      <div class="col-lg-12">
+        <div class="glass-card">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0 fw-bold">Overall Mastery Progress</h5>
+            <span class="badge bg-accent px-3 py-2 rounded-pill">{{ progress }}% Complete</span>
+          </div>
+          <div class="progress-premium mb-3">
+            <div class="progress-bar-premium h-100" style="width: {{ progress }}%"></div>
+          </div>
+          <p class="text-dim small mb-0">Keep going! You've covered {{ progress }}% of your total study load.</p>
         </div>
       </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="stat-card stat-purple h-100">
-          <div class="stat-icon"><i class="bi bi-list-task"></i></div>
-          <div class="stat-value">{{ total_tasks }}</div>
-          <div class="stat-label">Total Topics</div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="stat-card stat-green h-100">
-          <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
-          <div class="stat-value">{{ completed_tasks }}</div>
-          <div class="stat-label">Completed</div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="stat-card stat-orange h-100">
-          <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
-          <div class="stat-value">{{ progress }}%</div>
-          <div class="stat-label">Progress</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- ── Progress Bar ───────────────────────────────────────────────── -->
-    <div class="ssp-card mb-4 p-4">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h6 class="fw-semibold mb-0"><i class="bi bi-bar-chart-fill text-accent me-2"></i>Overall Completion</h6>
-        <span class="badge bg-accent">{{ progress }}%</span>
-      </div>
-      <div class="progress ssp-progress-bar">
-        <div class="progress-bar progress-bar-striped progress-bar-animated"
-             role="progressbar"
-             id="overallProgress"
-             style="width: 0%"
-             data-target="{{ progress }}"
-             aria-valuenow="{{ progress }}"
-             aria-valuemin="0"
-             aria-valuemax="100">
-        </div>
-      </div>
-      {% if total_tasks == 0 %}
-        <small class="text-muted mt-2 d-block">No topics added yet. <a href="{{ url_for('task.tasks') }}" class="ssp-link">Add topics</a> to track progress.</small>
-      {% endif %}
-    </div>
-
-    <!-- ── Today's Tasks + Subjects ──────────────────────────────────── -->
-    <div class="row g-4">
-
-      <!-- Today's scheduled tasks -->
+      <!-- Today's Focus -->
       <div class="col-lg-7">
-        <div class="ssp-card h-100 p-4">
-          <h5 class="fw-bold mb-3">
-            <i class="bi bi-calendar-day-fill text-accent me-2"></i>Today's Study Tasks
-          </h5>
+        <div class="glass-card h-100">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-fill text-warning me-2"></i>Today's Focus Tasks</h5>
+            <form action="{{ url_for('planner.generate_plan') }}" method="POST">
+                <button type="submit" class="btn btn-glass btn-sm">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Regenerate
+                </button>
+            </form>
+          </div>
+
           {% if today_tasks %}
-            <ul class="list-unstyled mb-0">
+            <div class="list-group list-group-flush bg-transparent">
               {% for task in today_tasks %}
-                <li class="today-task-item d-flex align-items-center gap-3 mb-2 p-2 rounded-2
-                    {% if task.status == 'Completed' %}task-done{% else %}task-pending{% endif %}">
-                  <span class="task-status-dot {% if task.status == 'Completed' %}done{% else %}pending{% endif %}"></span>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold small">{{ task.topic_name }}</div>
-                    <div class="text-muted" style="font-size:.75rem;">{{ task.subject_name }}</div>
+                <div class="list-group-item bg-transparent border-glass px-0 py-3 d-flex align-items-center gap-3">
+                  <div class="stat-icon-box rounded-circle" style="width: 40px; height: 40px; font-size: 1rem; background: var(--bg-dark-3);">
+                    {% if task.status == 'Completed' %}
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                    {% else %}
+                        <i class="bi bi-circle text-dim"></i>
+                    {% endif %}
                   </div>
-                  <span class="badge {% if task.status == 'Completed' %}bg-success{% else %}bg-warning text-dark{% endif %} badge-sm">
+                  <div class="flex-grow-1">
+                    <div class="fw-bold {% if task.status == 'Completed' %}text-dim text-decoration-line-through{% endif %}">{{ task.topic_name }}</div>
+                    <div class="text-dim small">{{ task.subject_name }}</div>
+                  </div>
+                  <span class="badge {% if task.status == 'Completed' %}bg-success-soft text-success{% else %}bg-warning-soft text-warning{% endif %} rounded-pill px-3">
                     {{ task.status }}
                   </span>
-                </li>
+                </div>
               {% endfor %}
-            </ul>
+            </div>
           {% else %}
-            <div class="text-center py-4">
-              <i class="bi bi-calendar-x display-5 text-muted"></i>
-              <p class="text-muted mt-2 mb-1">No tasks scheduled for today.</p>
+            <div class="text-center py-5">
+              <div class="stat-icon-box mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2.5rem; background: var(--bg-dark-3);">
+                <i class="bi bi-emoji-sunglasses"></i>
+              </div>
+              <h5>You're All Set!</h5>
+              <p class="text-dim">No tasks scheduled for today. Take a break or generate a new plan.</p>
               <form action="{{ url_for('planner.generate_plan') }}" method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-accent mt-1">
-                  <i class="bi bi-lightning-charge-fill me-1"></i>Generate Plan
+                <button type="submit" class="btn btn-premium mt-2">
+                  <i class="bi bi-magic me-2"></i>Generate Plan
                 </button>
               </form>
             </div>
@@ -114,82 +120,70 @@
         </div>
       </div>
 
-      <!-- Upcoming subjects -->
+      <!-- Upcoming Deadlines -->
       <div class="col-lg-5">
-        <div class="ssp-card h-100 p-4">
-          <h5 class="fw-bold mb-3">
-            <i class="bi bi-calendar-event-fill text-accent me-2"></i>Upcoming Exams
-          </h5>
+        <div class="glass-card h-100">
+          <h5 class="mb-4 fw-bold"><i class="bi bi-calendar-check text-accent me-2"></i>Critical Deadlines</h5>
           {% if subjects %}
-            {% for s in subjects %}
-              <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-subtle">
-                <div>
-                  <div class="fw-semibold small">{{ s.subject_name }}</div>
-                  <div class="text-muted" style="font-size:.75rem;">
-                    <i class="bi bi-calendar2 me-1"></i>{{ s.exam_date }}
+            <div class="mb-4">
+              {% for s in subjects %}
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-4" style="background: var(--bg-dark-3); border: 1px solid var(--border-glass);">
+                  <div class="text-center bg-dark rounded-3 p-2 border border-glass" style="min-width: 60px;">
+                    <div class="text-accent fw-bold" style="font-size: 1.2rem;">{{ s.days_left }}</div>
+                    <div class="text-dim extra-small">DAYS</div>
                   </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <div class="fw-bold text-truncate">{{ s.subject_name }}</div>
+                    <div class="text-dim small">{{ s.exam_date }}</div>
+                  </div>
+                  {% if s.days_left <= 3 %}
+                    <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+                  {% endif %}
                 </div>
-                {% if s.days_left < 0 %}
-                  <span class="badge bg-secondary">Passed</span>
-                {% elif s.days_left == 0 %}
-                  <span class="badge bg-danger">Today!</span>
-                {% elif s.days_left <= 3 %}
-                  <span class="badge bg-danger">{{ s.days_left }}d left</span>
-                {% elif s.days_left <= 7 %}
-                  <span class="badge bg-warning text-dark">{{ s.days_left }}d left</span>
-                {% else %}
-                  <span class="badge bg-success">{{ s.days_left }}d left</span>
-                {% endif %}
-              </div>
-            {% endfor %}
-            <a href="{{ url_for('subject.subjects') }}" class="btn btn-sm btn-outline-accent w-100 mt-2">
-              <i class="bi bi-book me-1"></i>Manage Subjects
+              {% endfor %}
+            </div>
+            <a href="{{ url_for('subject.subjects') }}" class="btn btn-glass w-100 mt-2">
+              <i class="bi bi-arrows-angle-expand me-2"></i>View All Subjects
             </a>
           {% else %}
-            <div class="text-center py-4">
-              <i class="bi bi-book display-5 text-muted"></i>
-              <p class="text-muted mt-2 mb-3">No subjects added yet.</p>
-              <a href="{{ url_for('subject.subjects') }}" class="btn btn-sm btn-accent">
-                <i class="bi bi-plus-lg me-1"></i>Add Subject
-              </a>
+            <div class="text-center py-5">
+              <i class="bi bi-plus-circle text-dim display-4 mb-3"></i>
+              <p class="text-dim">Add subjects to see deadlines here.</p>
+              <a href="{{ url_for('subject.subjects') }}" class="btn btn-premium btn-sm">Add Now</a>
             </div>
           {% endif %}
         </div>
       </div>
 
-    </div><!-- end row -->
-
-    <!-- ── Quick Actions ─────────────────────────────────────────────── -->
-    <div class="row g-3 mt-2">
-      <div class="col-12">
-        <h6 class="text-muted fw-semibold mb-3"><i class="bi bi-lightning me-1"></i>Quick Actions</h6>
-      </div>
-      <div class="col-6 col-sm-3">
-        <a href="{{ url_for('subject.subjects') }}" class="quick-action-btn d-flex flex-column align-items-center p-3 rounded-3 text-decoration-none h-100">
-          <i class="bi bi-book-fill fs-3 mb-2 text-accent"></i>
-          <span class="small fw-semibold">Add Subject</span>
-        </a>
-      </div>
-      <div class="col-6 col-sm-3">
-        <a href="{{ url_for('task.tasks') }}" class="quick-action-btn d-flex flex-column align-items-center p-3 rounded-3 text-decoration-none h-100">
-          <i class="bi bi-plus-circle-fill fs-3 mb-2 text-accent"></i>
-          <span class="small fw-semibold">Add Topic</span>
-        </a>
-      </div>
-      <div class="col-6 col-sm-3">
-        <a href="{{ url_for('planner.study_plan') }}" class="quick-action-btn d-flex flex-column align-items-center p-3 rounded-3 text-decoration-none h-100">
-          <i class="bi bi-calendar3 fs-3 mb-2 text-accent"></i>
-          <span class="small fw-semibold">View Plan</span>
-        </a>
-      </div>
-      <div class="col-6 col-sm-3">
-        <a href="{{ url_for('task.tasks') }}" class="quick-action-btn d-flex flex-column align-items-center p-3 rounded-3 text-decoration-none h-100">
-          <i class="bi bi-check2-square fs-3 mb-2 text-accent"></i>
-          <span class="small fw-semibold">All Tasks</span>
-        </a>
-      </div>
     </div>
 
-  </div>
-</section>
+    <!-- ── Quick Actions Footer ──────────────────────────────────────── -->
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ url_for('subject.subjects') }}" class="glass-card d-block text-center text-decoration-none group">
+                <i class="bi bi-plus-circle fs-3 text-accent mb-2"></i>
+                <div class="fw-bold">Create Subject</div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ url_for('task.tasks') }}" class="glass-card d-block text-center text-decoration-none group">
+                <i class="bi bi-list-task fs-3 text-accent mb-2"></i>
+                <div class="fw-bold">New Topic</div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ url_for('planner.study_plan') }}" class="glass-card d-block text-center text-decoration-none group">
+                <i class="bi bi-calendar3 fs-3 text-accent mb-2"></i>
+                <div class="fw-bold">Weekly View</div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ url_for('auth.profile') }}" class="glass-card d-block text-center text-decoration-none group">
+                <i class="bi bi-person-badge fs-3 text-accent mb-2"></i>
+                <div class="fw-bold">Settings</div>
+            </a>
+        </div>
+    </div>
+
+</div>
 {% endblock %}
