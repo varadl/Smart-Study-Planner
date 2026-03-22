@@ -38,6 +38,7 @@ def init_db():
             user_id      INTEGER NOT NULL,
             subject_name TEXT    NOT NULL,
             exam_date    TEXT    NOT NULL,
+            difficulty   INTEGER NOT NULL DEFAULT 3,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     ''')

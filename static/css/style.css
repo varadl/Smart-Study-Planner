@@ -6,14 +6,14 @@
 
 :root {
   /* Core Palette */
-  --accent:           #7c4dff;
-  --accent-glow:      rgba(124, 77, 255, 0.4);
-  --accent-soft:      rgba(124, 77, 255, 0.1);
-  --bg-dark-0:        #080911;
-  --bg-dark-1:        #0d0f1a;
-  --bg-dark-2:        #151828;
-  --bg-dark-3:        #1c1f35;
-  --bg-glass:         rgba(21, 24, 40, 0.7);
+  --accent:           #00f2fe;
+  --accent-glow:      rgba(0, 242, 254, 0.4);
+  --accent-soft:      rgba(0, 242, 254, 0.1);
+  --bg-dark-0:        #050812;
+  --bg-dark-1:        #080d1e;
+  --bg-dark-2:        #0c152d;
+  --bg-dark-3:        #121f40;
+  --bg-glass:         rgba(12, 21, 45, 0.7);
   
   /* Text */
   --text-main:        #f3f4f6;
@@ -39,8 +39,8 @@ body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-dark-0);
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(124, 77, 255, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(124, 77, 255, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.05) 0%, transparent 40%);
   color: var(--text-main);
   min-height: 100vh;
   margin: 0;
@@ -194,7 +194,7 @@ h1, h2, h3, .navbar-brand {
   overflow: hidden;
 }
 .progress-bar-premium {
-  background: linear-gradient(90deg, var(--accent), #a78bfa);
+  background: linear-gradient(90deg, var(--accent), #4facfe);
   border-radius: 99px;
 }
 
@@ -225,7 +225,7 @@ h1, h2, h3, .navbar-brand {
 .animate-float { animation: float 4s ease-in-out infinite; }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--accent) 0%, #c084fc 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, #4facfe 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
