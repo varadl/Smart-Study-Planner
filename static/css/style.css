@@ -15,18 +15,19 @@
   --bg-dark-3:        #121f40;
   --bg-glass:         rgba(12, 21, 45, 0.7);
   
-  /* Text */
-  --text-main:        #f3f4f6;
-  --text-muted:       #9ca3af;
-  --text-dim:         #6b7280;
+  /* Text - Improved for Readability */
+  --text-main:        #ffffff;
+  --text-muted:       #cbd5e1;
+  --text-dim:         #94a3b8;
   
   /* Utilities */
   --border-glass:     rgba(255, 255, 255, 0.08);
   --radius-lg:        20px;
   --radius-md:        12px;
   --radius-sm:        8px;
-  --shadow-lg:        0 20px 50px rgba(0, 0, 0, 0.5);
-  --transition:       all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-lg:        0 10px 40px -10px rgba(0,0,0,0.8), 0 0 20px rgba(0, 242, 254, 0.05);
+  --shadow-glass:     0 4px 24px rgba(0,0,0,0.4);
+  --transition:       all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   
   /* Feedback */
   --success:          #10b981;
@@ -39,12 +40,13 @@ body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-dark-0);
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 15% 30%, rgba(0, 242, 254, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 70%, rgba(0, 242, 254, 0.06) 0%, transparent 45%);
   color: var(--text-main);
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
+  line-height: 1.6;
 }
 
 h1, h2, h3, .navbar-brand {
@@ -109,6 +111,8 @@ h1, h2, h3, .navbar-brand {
   text-decoration: none;
   border-radius: var(--radius-md);
   margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 500;
   transition: var(--transition);
 }
 .side-nav-link i {
@@ -122,28 +126,36 @@ h1, h2, h3, .navbar-brand {
 
 /* Glass Cards */
 .glass-card {
-  background: var(--bg-dark-2);
+  background: linear-gradient(145deg, var(--bg-dark-2), var(--bg-dark-1));
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-glass);
   transition: var(--transition);
+  backdrop-filter: blur(10px);
 }
 .glass-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent);
+  transform: translateY(-8px);
+  border-color: rgba(0, 242, 254, 0.3);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Stat Cards */
 .stat-widget {
-  background: var(--bg-dark-2);
+  background: linear-gradient(145deg, var(--bg-dark-2), var(--bg-dark-1));
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 1.75rem;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-glass);
   transition: var(--transition);
+}
+.stat-widget:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 242, 254, 0.3);
+  box-shadow: var(--shadow-lg);
 }
 .stat-icon-box {
   width: 54px;
@@ -159,10 +171,11 @@ h1, h2, h3, .navbar-brand {
 .btn-premium {
   background: var(--accent);
   color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Fixes visibility on bright cyan */
   border: none;
   border-radius: var(--radius-md);
   padding: 0.8rem 1.75rem;
-  font-weight: 600;
+  font-weight: 700;
   box-shadow: 0 10px 20px var(--accent-glow);
   transition: var(--transition);
 }
@@ -229,4 +242,32 @@ h1, h2, h3, .navbar-brand {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Custom Soft Utilities */
+.bg-success-soft {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+.bg-warning-soft {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+.bg-danger-soft {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Custom Text Utilities */
+.text-muted {
+  color: var(--text-muted) !important;
+}
+.text-dim {
+  color: var(--text-dim) !important;
+}
+.text-accent {
+  color: var(--accent) !important;
+}
+.bg-accent {
+  background-color: var(--accent) !important;
+}
+.bg-dark {
+  background-color: var(--bg-dark-1) !important;
 }
